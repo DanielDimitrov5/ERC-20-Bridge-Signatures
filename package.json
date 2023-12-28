@@ -1,0 +1,19 @@
+{
+  "name": "erc20-bridge-backend",
+  "version": "1.0.0",
+  "description": "ERC20 Bridge backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "ethers": "^6.9.1"
+  }
+}

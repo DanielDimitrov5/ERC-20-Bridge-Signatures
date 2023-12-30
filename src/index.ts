@@ -1,25 +1,41 @@
-import { ethers } from 'ethers';
+import { AddressLike, BigNumberish, Wallet, ethers } from 'ethers';
 import { PrismaClient } from '@prisma/client';
+import Bridge from "./contract/Bridge.json";
 
-const prisma = new PrismaClient();
+import dotenv from 'dotenv';
+dotenv.config();
 
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL_SEPOLIA);
+const privateKey = process.env.PRIVATE_KEY;
 
-
-async function main() {
-    const newSig = await prisma.signatures.create({
-        data: {
-            address: "0x1234567890123456789012345678901234567890",
-            signature: "0x000215e1AEbBB1f4DE1b9c5f68C03d5E6f6B39A8"
-        },
-    });
-
-    console.log(newSig);
+if (!provider) {
+    throw new Error('RPC URL is not defined in environment variables.');
 }
 
-main()
-    .catch(e => {
-        throw e
-    })
-    .finally(async () => {
-        await prisma.$disconnect()
-    });
+if (!privateKey) {
+    throw new Error('Private key is not defined in environment variables.');
+}
+
+const wallet = new ethers.Wallet(privateKey, provider);
+
+
+const bridgeContract = new ethers.Contract(Bridge.contractAddress, Bridge.abi, wallet);
+
+interface WrapData {
+    name: string;
+    symbol: string;
+}
+
+bridgeContract.on("Lock", async (token: string, sender: string, amount: BigNumberish, chainId: BigNumberish, wrapData: WrapData) => {
+    const sig = await signBridgeMintMessage(wallet, token, sender, amount, 1, 0);
+    console.log(sig);
+});
+
+async function signBridgeMintMessage(wallet: Wallet, tokenAddress: AddressLike, senderAddress: AddressLike, amount: BigNumberish, chainId: BigNumberish, nonce: BigNumberish) {
+    const message = ethers.solidityPackedKeccak256(
+        ['address', 'address', 'uint256', 'uint256', 'uint256'],
+        [tokenAddress, senderAddress, amount, chainId, nonce]
+    );
+    const signature = await wallet.signMessage(ethers.getBytes(message));
+    return signature;
+}

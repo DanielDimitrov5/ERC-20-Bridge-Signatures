@@ -1,11 +1,13 @@
 import { AddressLike, BigNumberish, Wallet, ethers } from 'ethers';
 import { PrismaClient } from '@prisma/client';
 import Bridge from "./contract/Bridge.json";
+import { signBridgeMintMessage, signBridgeReleaseMessage } from './utils/messageSigning';
 
 import dotenv from 'dotenv';
 dotenv.config();
 
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL_SEPOLIA);
+// const provider = new ethers.JsonRpcProvider("HTTP://127.0.0.1:7545");
 const privateKey = process.env.PRIVATE_KEY;
 
 if (!provider) {
@@ -26,16 +28,12 @@ interface WrapData {
     symbol: string;
 }
 
-bridgeContract.on("Lock", async (token: string, sender: string, amount: BigNumberish, chainId: BigNumberish, wrapData: WrapData) => {
-    const sig = await signBridgeMintMessage(wallet, token, sender, amount, 1, 0);
+bridgeContract.on("Lock", async (token: AddressLike, sender: AddressLike, amount: BigNumberish, chainId: BigNumberish, wrapData: WrapData) => {
+    const sig = await signBridgeMintMessage(wallet, token, sender, amount, chainId, 0);
     console.log(sig);
 });
 
-async function signBridgeMintMessage(wallet: Wallet, tokenAddress: AddressLike, senderAddress: AddressLike, amount: BigNumberish, chainId: BigNumberish, nonce: BigNumberish) {
-    const message = ethers.solidityPackedKeccak256(
-        ['address', 'address', 'uint256', 'uint256', 'uint256'],
-        [tokenAddress, senderAddress, amount, chainId, nonce]
-    );
-    const signature = await wallet.signMessage(ethers.getBytes(message));
-    return signature;
-}
+bridgeContract.on("Burn", async (token: AddressLike, from: AddressLike, amount: BigNumberish) => {
+    const sig = await signBridgeReleaseMessage(wallet, token, from, amount, 1);
+    console.log(sig);
+});

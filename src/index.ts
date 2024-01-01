@@ -1,27 +1,26 @@
-import { AddressLike, BigNumberish, Wallet, ethers } from 'ethers';
+import { AddressLike, BigNumberish, ethers } from 'ethers';
 import { PrismaClient } from '@prisma/client';
-import Bridge from "./contract/Bridge.json";
+import { getContractInstance , getProvider} from './utils/chainManager';
 import { signBridgeMintMessage, signBridgeReleaseMessage } from './utils/messageSigning';
 
 import dotenv from 'dotenv';
 dotenv.config();
 
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL_SEPOLIA);
-// const provider = new ethers.JsonRpcProvider("HTTP://127.0.0.1:7545");
 const privateKey = process.env.PRIVATE_KEY;
-
-if (!provider) {
-    throw new Error('RPC URL is not defined in environment variables.');
-}
 
 if (!privateKey) {
     throw new Error('Private key is not defined in environment variables.');
 }
 
+const provider = getProvider(11155111);
+
+if (!provider) {
+    throw new Error('RPC URL is not defined in environment variables.');
+}
+
 const wallet = new ethers.Wallet(privateKey, provider);
 
-
-const bridgeContract = new ethers.Contract(Bridge.contractAddress, Bridge.abi, wallet);
+const bridgeContract =  getContractInstance(11155111, privateKey);
 
 interface WrapData {
     name: string;

@@ -1,5 +1,9 @@
 {
-    "contractAddress": "0x6E84FceeA447D70955de07bDaA59851D0930DB9e", 
+    "chains": {
+        "1": "0x0",
+        "11155111": "0xd0a376e43c57EEAdD253139f6272134c22AAA549",
+        "5": "0xb4A646009dd537e8f6A7bcA0aaEbc42376900638"
+    },
     "abi": [
         {   
             "type": "constructor",

@@ -1,9 +1,11 @@
-import { sepoliaListener } from './listeners/sepoliaListener';
-import { goerliListener } from './listeners/goerliListener';
+import { Listener } from './listeners/listener';
 
 const main = async () => {
-    await sepoliaListener();
-    await goerliListener();
+    const sepolia = new Listener(11155111);
+    const goerli = new Listener(5);
+
+    await sepolia.start();
+    await goerli.start();
 }
 
 main();

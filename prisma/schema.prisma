@@ -10,14 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model MintSignatures {
+model MintSignature {
   id            Int      @id @default(autoincrement())
   tokenAddress  String   @db.VarChar(42)
   userAddress   String   @db.VarChar(42)
-  amount        Int
-  nonce         Int
+  amount        BigInt
+  nonce         BigInt
   signature     String
-  sourceChainId Int
+  sourceChainId BigInt
   tokenName     String
   tokenSymbol   String
   createdAt     DateTime @default(now())
@@ -27,7 +27,7 @@ model ReleaseSignature {
   id            Int      @id @default(autoincrement())
   tokenAddress  String   @db.VarChar(42)
   userAddress   String   @db.VarChar(42)
-  amount        Int
-  nonce         Int
+  amount        BigInt
+  nonce         BigInt
   signature     String
 }

@@ -35,12 +35,39 @@ export class Listener {
             const nonce = await getContractInstance(this.chainId, this.privateKey).nonces(sender);
             
             const sig = await signBridgeMintMessage(this.wallet, token, sender, amount, chainId, nonce);
-            console.log(sig);
+
+            const mintData = await this.prisma.mintSignature.create({
+                data: {
+                    tokenAddress: token.toString(),
+                    userAddress: sender.toString(),
+                    amount: BigInt(amount),
+                    nonce: nonce,
+                    signature: sig,
+                    sourceChainId: BigInt(chainId),
+                    tokenName: wrapData.name,
+                    tokenSymbol: wrapData.symbol
+                }
+            });
+
+            console.log(mintData);
         });
     
         this.bridgeContract.on("Burn", async (token: AddressLike, from: AddressLike, amount: BigNumberish) => {
             const sig = await signBridgeReleaseMessage(this.wallet, token, from, amount, 1);
+
+            const nonce = await getContractInstance(this.chainId, this.privateKey).nonces(from);
+
+            const releaseData = await this.prisma.releaseSignature.create({
+                data: {
+                    tokenAddress: token.toString(),
+                    userAddress: from.toString(),
+                    amount: BigInt(amount),
+                    nonce: nonce,
+                    signature: sig
+                }
+            });
+
             console.log(sig);
-        });
+        });          
     }
 }

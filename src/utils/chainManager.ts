@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { ethers, BigNumberish } from 'ethers';
 import Bridge from "../contract/Bridge.json";
 
 import dotenv from 'dotenv';
@@ -10,11 +10,11 @@ export const chains: { [key: number]: string | undefined } = {
     11155111: process.env.RPC_URL_SEPOLIA
 }
 
-export const getProvider = (chainId: number) => {
-    return new ethers.JsonRpcProvider(chains[chainId]);
+export const getProvider = (chainId: BigNumberish) => {
+    return new ethers.JsonRpcProvider(chains[Number(chainId)]);
 }
 
-export const getContractInstance = (chainId: number, privateKey: string) => {
+export const getContractInstance = (chainId: BigNumberish, privateKey: string) => {
     const wallet = new ethers.Wallet(privateKey, getProvider(chainId));
 
     if(!(chainId == 1 || chainId == 5 || chainId == 11155111)) {

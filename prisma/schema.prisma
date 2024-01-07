@@ -17,7 +17,7 @@ model MintSignature {
   amount        BigInt
   nonce         BigInt
   signature     String
-  sourceChainId BigInt
+  targetChainId BigInt
   tokenName     String
   tokenSymbol   String
   createdAt     DateTime @default(now())
@@ -30,4 +30,9 @@ model ReleaseSignature {
   amount        BigInt
   nonce         BigInt
   signature     String
+}
+
+model ConfigurationData {
+  id           Int      @id @default(autoincrement())
+  lastProcessedBlockNumber BigInt
 }

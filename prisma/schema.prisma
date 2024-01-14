@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model MintSignature {
+  id            Int      @id @default(autoincrement())
+  tokenAddress  String   @db.VarChar(42)
+  userAddress   String   @db.VarChar(42)
+  amount        BigInt
+  nonce         BigInt
+  signature     String
+  targetChainId BigInt
+  tokenName     String
+  tokenSymbol   String
+  createdAt     DateTime @default(now())
+}
+
+model ReleaseSignature {
+  id            Int      @id @default(autoincrement())
+  tokenAddress  String   @db.VarChar(42)
+  userAddress   String   @db.VarChar(42)
+  amount        BigInt
+  nonce         BigInt
+  signature     String
+  createdAt     DateTime @default(now())
+}
+
+model ConfigurationData {
+  id           Int      @id @default(autoincrement())
+  lastProcessedBlockNumber11155111 BigInt @default(0)
+  lastProcessedBlockNumber5 BigInt @default(0)
+}

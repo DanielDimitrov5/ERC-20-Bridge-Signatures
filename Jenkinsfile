@@ -13,7 +13,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'npm run build' // Replace with your build command
+                sh 'npm run build'
             }
         }
     }

@@ -1,1 +1,27 @@
 version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      RPC_URL_MAINNET: ${RPC_URL_MAINNET}
+      RPC_URL_SEPOLIA: ${RPC_URL_SEPOLIA}
+      RPC_URL_GOERLI: ${RPC_URL_GOERLI}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+    depends_on:
+      - db
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: 'erc20bridge'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'innovator'
+      MYSQL_ROOT_PASSWORD: 'innovator'
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+volumes:
+  db_data:

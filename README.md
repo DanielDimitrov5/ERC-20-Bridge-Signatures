@@ -32,7 +32,7 @@ Before setting up the ERC20-Bridge Backend, ensure you have the following prereq
 1. Clone the repository:
 
    ```bash
-   git clone [repository_url]
+   git clone https://github.com/DanielDimitrov5/ERC-20-Bridge-Signatures.git
    ```
 2. Install dependencies:
 
